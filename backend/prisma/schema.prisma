@@ -1,0 +1,43 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  jobs      Job[]
+}
+
+model Job {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  companyName String
+  role        String
+  status      String   @default("Applied")
+  notes       String?
+  resume_url  String?
+  createdAt   DateTime @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reminders   Reminder[]
+}
+
+model Reminder {
+  id           Int      @id @default(autoincrement())
+  jobId        Int
+  reminderDate DateTime
+  message      String?
+  createdAt    DateTime @default(now())
+
+  job          Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
