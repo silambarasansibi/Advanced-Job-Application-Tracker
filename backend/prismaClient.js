@@ -5,6 +5,9 @@ const { PrismaPg } = require("@prisma/adapter-pg");
 const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
 const pool = new Pool({ 
   connectionString,
+  ssl: {
+    rejectUnauthorized: false
+  },
   max: 20,
   min: 2,
   idleTimeoutMillis: 60000,
